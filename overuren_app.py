@@ -99,8 +99,8 @@ with tab1:
 
     st.divider()
 
-    totaal_overuren = overuren_df["Aantal Uren (+) of (-)"].sum() if not overuren_df.empty else 0
-    totaal_recup = recup_df["Aantal Uren (+) of (-)"].sum() if not recup_df.empty else 0
+    totaal_overuren = pd.to_numeric(overuren_df["Aantal Uren (+) of (-)"], errors="coerce").sum() if not overuren_df.empty else 0
+    totaal_recup = pd.to_numeric(recup_df["Aantal Uren (+) of (-)"], errors="coerce").sum() if not recup_df.empty else 0
     saldo = totaal_overuren + totaal_recup
 
     st.metric(label="💼 Huidig saldo uren", value=f"{saldo:.2f} uur")
