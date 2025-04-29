@@ -65,7 +65,7 @@ with tab1:
                 nieuwe_regel = [
                     datum.strftime("%Y-%m-%d"),
                     keuze,
-                    round(float(aantal_uren), 2) if keuze == "Overuren" else round(-float(aantal_uren), 2),
+                    "{:.2f}".format(aantal_uren if keuze == "Overuren" else -aantal_uren),
                     opmerking
                 ]
 
