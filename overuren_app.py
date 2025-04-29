@@ -47,15 +47,15 @@ with tab1:
         col1, col2 = st.columns(2)
         with col1:
             datum = st.date_input("Datum", datetime.today())
-            starttijd = st.time_input("Starttijd", value=datetime.now().time())
+            starttijd_str = st.text_input("Starttijd (HH:MM)", "08:30")
         with col2:
-            eindtijd = st.time_input("Eindtijd", value=(datetime.now() + timedelta(hours=1)).time())
+            eindtijd_str = st.text_input("Eindtijd (HH:MM)", "17:00")
             opmerking = st.text_input("Opmerking")
 
         if st.form_submit_button("➕ Toevoegen"):
             try:
-                start_dt = datetime.combine(datetime.today(), starttijd)
-                eind_dt = datetime.combine(datetime.today(), eindtijd)
+                start_dt = datetime.strptime(starttijd_str, "%H:%M")
+                eind_dt = datetime.strptime(eindtijd_str, "%H:%M")
 
                 if eind_dt < start_dt:
                     eind_dt += timedelta(days=1)
@@ -77,12 +77,11 @@ with tab1:
                     st.success("✅ Recup toegevoegd!")
 
                 st.rerun()
-            except Exception as e:
-                st.error(f"❌ Fout bij berekening: {e}")
+            except ValueError:
+                st.error("❌ Ongeldig tijdformaat. Gebruik HH:MM zoals 08:30 of 17:15.")
 
     st.divider()
 
-    # Gegevens tonen
     overuren_df = load_overuren()
     recup_df = load_recup()
 
@@ -100,7 +99,6 @@ with tab1:
 
     st.divider()
 
-    # Saldo
     totaal_overuren = overuren_df["Aantal Uren (+) of (-)"].sum() if not overuren_df.empty else 0
     totaal_recup = recup_df["Aantal Uren (+) of (-)"].sum() if not recup_df.empty else 0
     saldo = totaal_overuren + totaal_recup
@@ -129,16 +127,16 @@ with tab2:
 
         with st.form("bewerken_form"):
             edit_datum = st.date_input("Datum", pd.to_datetime(record["Datum"]))
-            edit_start = st.time_input("Starttijd")
-            edit_end = st.time_input("Eindtijd")
+            edit_start = st.text_input("Starttijd (HH:MM)", "08:00")
+            edit_end = st.text_input("Eindtijd (HH:MM)", "17:00")
             edit_opmerking = st.text_input("Opmerking", record["Opmerking"])
 
             col1, col2 = st.columns([2, 1])
             with col1:
                 if st.form_submit_button("✅ Wijzig opslaan"):
                     try:
-                        s_dt = datetime.combine(datetime.today(), edit_start)
-                        e_dt = datetime.combine(datetime.today(), edit_end)
+                        s_dt = datetime.strptime(edit_start, "%H:%M")
+                        e_dt = datetime.strptime(edit_end, "%H:%M")
                         if e_dt < s_dt:
                             e_dt += timedelta(days=1)
                         uren = round((e_dt - s_dt).total_seconds() / 3600, 2)
@@ -152,8 +150,8 @@ with tab2:
                         sheet.update(f"A{int(index)+2}:D{int(index)+2}", [nieuwe_data])
                         st.success("✅ Wijziging opgeslagen!")
                         st.rerun()
-                    except Exception as e:
-                        st.error(f"❌ Fout bij berekening: {e}")
+                    except ValueError:
+                        st.error("❌ Ongeldige tijd. Gebruik HH:MM (zoals 07:30).")
             with col2:
                 if st.form_submit_button("🗑️ Verwijder registratie"):
                     sheet.delete_rows(int(index) + 2)
