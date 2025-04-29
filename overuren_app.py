@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # === SETTINGS ===
 SHEET_NAME = "OverurenRegistratie"
@@ -44,26 +44,41 @@ with tab1:
     keuze = st.radio("Wat wil je registreren?", ["Overuren", "Recup"])
 
     with st.form("registratie_form", clear_on_submit=True):
-        datum = st.date_input("Datum", datetime.today())
-        uren = st.number_input("Aantal uren", min_value=0.25, step=0.25, format="%.2f")
-        opmerking = st.text_input("Opmerking")
+        col1, col2 = st.columns(2)
+        with col1:
+            datum = st.date_input("Datum", datetime.today())
+            starttijd = st.time_input("Starttijd", value=datetime.now().time())
+        with col2:
+            eindtijd = st.time_input("Eindtijd", value=(datetime.now() + timedelta(hours=1)).time())
+            opmerking = st.text_input("Opmerking")
 
         if st.form_submit_button("➕ Toevoegen"):
-            nieuwe_regel = [
-                datum.strftime("%Y-%m-%d"),
-                keuze,
-                uren if keuze == "Overuren" else -uren,
-                opmerking
-            ]
+            try:
+                start_dt = datetime.combine(datetime.today(), starttijd)
+                eind_dt = datetime.combine(datetime.today(), eindtijd)
 
-            if keuze == "Overuren":
-                sheet_overuren.append_row(nieuwe_regel)
-                st.success("✅ Overuren toegevoegd!")
-            else:
-                sheet_recup.append_row(nieuwe_regel)
-                st.success("✅ Recup toegevoegd!")
+                if eind_dt < start_dt:
+                    eind_dt += timedelta(days=1)
 
-            st.rerun()
+                aantal_uren = round((eind_dt - start_dt).total_seconds() / 3600, 2)
+
+                nieuwe_regel = [
+                    datum.strftime("%Y-%m-%d"),
+                    keuze,
+                    aantal_uren if keuze == "Overuren" else -aantal_uren,
+                    opmerking
+                ]
+
+                if keuze == "Overuren":
+                    sheet_overuren.append_row(nieuwe_regel)
+                    st.success("✅ Overuren toegevoegd!")
+                else:
+                    sheet_recup.append_row(nieuwe_regel)
+                    st.success("✅ Recup toegevoegd!")
+
+                st.rerun()
+            except Exception as e:
+                st.error(f"❌ Fout bij berekening: {e}")
 
     st.divider()
 
@@ -86,9 +101,8 @@ with tab1:
     st.divider()
 
     # Saldo
-    totaal_overuren = overuren_df["Aantal Uren (+)"].sum() if not overuren_df.empty else 0
-    totaal_recup = recup_df["Aantal Uren (-)"].sum() if not recup_df.empty else 0
-
+    totaal_overuren = overuren_df["Aantal Uren (+) of (-)"].sum() if not overuren_df.empty else 0
+    totaal_recup = recup_df["Aantal Uren (+) of (-)"].sum() if not recup_df.empty else 0
     saldo = totaal_overuren + totaal_recup
 
     st.metric(label="💼 Huidig saldo uren", value=f"{saldo:.2f} uur")
@@ -115,28 +129,35 @@ with tab2:
 
         with st.form("bewerken_form"):
             edit_datum = st.date_input("Datum", pd.to_datetime(record["Datum"]))
-            edit_uren = st.number_input("Aantal uren", value=float(record[df.columns[2]]), step=0.25, format="%.2f")
+            edit_start = st.time_input("Starttijd")
+            edit_end = st.time_input("Eindtijd")
             edit_opmerking = st.text_input("Opmerking", record["Opmerking"])
 
             col1, col2 = st.columns([2, 1])
-
             with col1:
                 if st.form_submit_button("✅ Wijzig opslaan"):
-                    nieuwe_data = [
-                        edit_datum.strftime("%Y-%m-%d"),
-                        selectie,
-                        edit_uren,
-                        edit_opmerking
-                    ]
-                    sheet.update(f"A{int(index)+2}:D{int(index)+2}", [nieuwe_data])
-                    st.success("✅ Wijziging opgeslagen!")
-                    st.rerun()
+                    try:
+                        s_dt = datetime.combine(datetime.today(), edit_start)
+                        e_dt = datetime.combine(datetime.today(), edit_end)
+                        if e_dt < s_dt:
+                            e_dt += timedelta(days=1)
+                        uren = round((e_dt - s_dt).total_seconds() / 3600, 2)
 
+                        nieuwe_data = [
+                            edit_datum.strftime("%Y-%m-%d"),
+                            selectie,
+                            uren if selectie == "Overuren" else -uren,
+                            edit_opmerking
+                        ]
+                        sheet.update(f"A{int(index)+2}:D{int(index)+2}", [nieuwe_data])
+                        st.success("✅ Wijziging opgeslagen!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Fout bij berekening: {e}")
             with col2:
                 if st.form_submit_button("🗑️ Verwijder registratie"):
-                    sheet.delete_rows(int(index)+2)
+                    sheet.delete_rows(int(index) + 2)
                     st.success("🗑️ Registratie verwijderd!")
                     st.rerun()
-
     else:
         st.info(f"Nog geen {selectie.lower()} geregistreerd.")
