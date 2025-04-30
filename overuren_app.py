@@ -9,7 +9,7 @@ SHEET_NAME = "OverurenApp"
 TAB_OVERUREN = "Overuren"
 TAB_RECUP = "Recup"
 
-# === Connectie maken ===
+# === Connectie met Google Sheets ===
 def connect_to_sheets():
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -29,7 +29,7 @@ def load_data(sheet):
         data = sheet.get_all_records()
         return pd.DataFrame(data)
     except:
-        return pd.DataFrame(columns=["Datum", "Type", "Aantal Uren (+) of (-)", "Opmerking"])
+        return pd.DataFrame(columns=["Datum", "Type", "Starttijd", "Eindtijd", "Aantal Uren (+) of (-)", "Opmerking"])
 
 # === App layout ===
 st.set_page_config("Overurenregistratie", layout="wide")
@@ -64,6 +64,8 @@ with tab1:
                 nieuwe_regel = [
                     datum.strftime("%Y-%m-%d"),
                     keuze,
+                    starttijd,
+                    eindtijd,
                     formatted,
                     opmerking
                 ]
@@ -75,7 +77,7 @@ with tab1:
             except Exception as e:
                 st.error(f"❌ Ongeldige tijd. Gebruik HH:MM formaat (bijv. 08:30).")
 
-    # Overzicht
+    # Overzicht + saldo
     overuren_df = load_data(sheet_overuren)
     recup_df = load_data(sheet_recup)
 
@@ -91,14 +93,12 @@ with tab1:
     else:
         st.dataframe(recup_df, use_container_width=True)
 
-    # Saldo
     totaal_overuren = pd.to_numeric(overuren_df["Aantal Uren (+) of (-)"], errors="coerce").sum() if not overuren_df.empty else 0
     totaal_recup = pd.to_numeric(recup_df["Aantal Uren (+) of (-)"], errors="coerce").sum() if not recup_df.empty else 0
     saldo = totaal_overuren + totaal_recup
 
     st.markdown(f"### 💼 Huidig saldo uren")
     st.metric("Totaal", f"{round(saldo, 2)} uur")
-
 
 # === 🛠️ TAB 2 – Beheer ===
 with tab2:
@@ -118,8 +118,8 @@ with tab2:
 
         with st.form("bewerken_formulier"):
             datum = st.date_input("Datum", pd.to_datetime(geselecteerde["Datum"]))
-            starttijd = st.text_input("Starttijd (HH:MM)", value="08:00")
-            eindtijd = st.text_input("Eindtijd (HH:MM)", value="17:00")
+            starttijd = st.text_input("Starttijd (HH:MM)", geselecteerde["Starttijd"])
+            eindtijd = st.text_input("Eindtijd (HH:MM)", geselecteerde["Eindtijd"])
             opmerking = st.text_input("Opmerking", geselecteerde["Opmerking"])
 
             if st.form_submit_button("✅ Wijzig opslaan"):
@@ -135,11 +135,13 @@ with tab2:
                     nieuwe_regel = [
                         datum.strftime("%Y-%m-%d"),
                         keuze,
+                        starttijd,
+                        eindtijd,
                         formatted,
                         opmerking
                     ]
 
-                    sheet.update(f"A{index + 2}:D{index + 2}", [nieuwe_regel])
+                    sheet.update(f"A{index + 2}:F{index + 2}", [nieuwe_regel])
                     st.success("✅ Registratie aangepast")
                     st.rerun()
                 except Exception as e:

@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b6c2499-623e-408f-a02c-7fe05182b3ec" name="Changes" comment="Init">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="5b6c2499-623e-408f-a02c-7fe05182b3ec" name="Changes" comment="Afronden tijd" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,21 +20,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2vo4G2lEKaOAmSkYV2iUQIXD0vu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -61,11 +59,78 @@
       <option name="project" value="LOCAL" />
       <updated>1744798541484</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Sheets">
+      <option name="closed" value="true" />
+      <created>1745919838505</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1745919838505</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Sheets">
+      <option name="closed" value="true" />
+      <created>1745919990472</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1745919990472</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Sheets + berekenen tijd">
+      <option name="closed" value="true" />
+      <created>1745921282312</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1745921282312</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Sheets + berekenen tijd">
+      <option name="closed" value="true" />
+      <created>1745921472083</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1745921472083</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Afronden tijd">
+      <option name="closed" value="true" />
+      <created>1745921970743</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1745921970743</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Afronden tijd">
+      <option name="closed" value="true" />
+      <created>1745922126149</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745922126149</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Afronden tijd">
+      <option name="closed" value="true" />
+      <created>1745922268798</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745922268798</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Afronden tijd">
+      <option name="closed" value="true" />
+      <created>1745928071839</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1745928071839</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init" />
+    <MESSAGE value="Sheets" />
+    <MESSAGE value="Sheets + berekenen tijd" />
+    <MESSAGE value="Afronden tijd" />
+    <option name="LAST_COMMIT_MESSAGE" value="Afronden tijd" />
   </component>
 </project>
